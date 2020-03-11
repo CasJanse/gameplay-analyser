@@ -8,6 +8,7 @@ import sys
 import numpy as np
 from inspect import currentframe, getframeinfo
 import json
+from os import path
 
 
 # region Data cleaning
@@ -86,40 +87,40 @@ def categorise_input_data(input_data, input_format=1):
 # endregion
 
 
-# region Run CNN models
-def run_model_1(base_model, x_train, y_train, x_test, y_test):
+# region Create CNN models
+def create_model_1(base_model):
     # region Model 1
     model_1 = build_model_1(base_model)
 
     # Compile model using accuracy to measure model performance
     model_1.compile(optimizer="adam", loss="categorical_crossentropy", metrics=["accuracy"])
 
-    # Train the model
-    train_model(model_1, x_train, x_test, y_train, y_test)
+    # Save the model
+    save_model(model_1)
     # endregion
 
 
-def run_model_2(base_model, x_train, y_train, x_test, y_test):
+def create_model_2(base_model):
     # region Model 2
     model_2 = build_model_2(base_model)
 
     # Compile model using accuracy to measure model performance
     model_2.compile(optimizer="adam", loss="categorical_crossentropy", metrics=["accuracy"])
 
-    # Train the model
-    train_model(model_2, x_train, x_test, y_train, y_test)
+    # Save the model
+    save_model(model_2)
     # endregion
 
 
-def run_model_3(base_model, x_train, y_train, x_test, y_test):
+def create_model_3(base_model):
     # region Model 3
     model_3 = build_model_3(base_model)
 
     # Compile model using accuracy to measure model performance
     model_3.compile(optimizer="adam", loss="categorical_crossentropy", metrics=["accuracy"])
 
-    # Train the model
-    train_model(model_3, x_train, x_test, y_train, y_test)
+    # Save the model
+    save_model(model_3)
     # endregion
 
 
@@ -184,11 +185,12 @@ def split(word):
     return [char for char in str(word)]
 
 
-def save_model(model, history):
-    model.save("../../networks/{}-20-08.h5".format(current_model_code))
+def save_model(model, history=None):
+    model.save("../../networks/{}-40.h5".format(current_model_code))
 
-    with open("../../networks/{}-20-08_history.json".format(current_model_code), "w+") as file:
-        json.dump(str(history.history), file)
+    if history is not None:
+        with open("../../networks/{}-40_history.json".format(current_model_code), "w+") as file:
+            json.dump(str(history.history), file)
 
 # endregion
 
@@ -246,16 +248,22 @@ def train_networks(models_to_run):
         # print(y_train[0])
         # endregion
 
-        # Create model
-        base_model = Sequential()
+        model = load_model_from_file(current_model_code)
 
-        # Add different model structures and test them separately
-        if current_model == 1:
-            run_model_1(base_model, x_train, y_train, x_test, y_test)
-        elif current_model == 2:
-            run_model_2(base_model, x_train, y_train, x_test, y_test)
-        elif current_model == 3:
-            run_model_3(base_model, x_train, y_train, x_test, y_test)
+        if model is None:
+            # Create model
+            base_model = Sequential()
+
+            # Add different model structures and test them separately
+            if current_model == 1:
+                create_model_1(base_model)
+            elif current_model == 2:
+                create_model_2(base_model)
+            elif current_model == 3:
+                create_model_3(base_model)
+            print("Created new network")
+
+        train_model(load_model_from_file(current_model_code), x_train, x_test, y_train, y_test)
 
 
 def get_data_from_video(video_name, input_name, compression_percentage, model_code):
@@ -286,7 +294,10 @@ def convert_data_to_train_test_batches(video_data, input_data, ratio=0.8):
 
 
 def load_model_from_file(model_code):
-    model = load_model("../../networks/{}.h5".format(model_code))
+    if path.exists("../../networks/{}-40.h5".format(model_code)):
+        model = load_model("../../networks/{}-40.h5".format(model_code))
+    else:
+        model = None
     return model
 
 
@@ -295,8 +306,8 @@ models_to_run = [1311, 2315, 3315, 1321, 2325, 3325, 1331, 2335, 3335]
 
 train_networks(models_to_run)
 
-# video_data, input_data = get_data_from_video("output_7.avi", "inputs_7.csv", 20, 1331)
-# model = load_model_from_file("1331-20-08")
+# video_data, input_data = get_data_from_video("output_7.avi", "inputs_7.csv", 40, 1331)
+# model = load_model_from_file("1331")
 
 # for chunk in video_data:
 # result = model.predict(video_data)
