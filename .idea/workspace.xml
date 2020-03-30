@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="61d19a0f-7358-4ba0-b369-52c3f6bcb476" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/AccuracyGraph.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/JSONLoader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ConvolutionNeuralNetwork.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ConvolutionNeuralNetwork.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DataLoader.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/DataLoader.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -20,10 +15,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/ConvolutionNeuralNetwork.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="47">
-              <caret line="472" column="94" selection-start-line="472" selection-start-column="94" selection-end-line="472" selection-end-column="94" />
-              <caret line="473" column="40" selection-start-line="473" selection-start-column="40" selection-end-line="473" selection-end-column="40" />
-              <caret line="409" column="28" selection-start-line="409" selection-start-column="28" selection-end-line="409" selection-end-column="28" />
+            <state relative-caret-position="85">
+              <caret line="133" column="86" selection-start-line="133" selection-start-column="86" selection-end-line="133" selection-end-column="86" />
               <folding>
                 <element signature="e#0#32#0" expanded="true" />
                 <element signature="e#439#461#0" />
@@ -86,7 +79,6 @@
       <find>train_net</find>
       <find>save</find>
       <find>normalise</find>
-      <find>print</find>
       <find>load_m</find>
       <find>get_data</find>
       <find>print(</find>
@@ -100,6 +92,11 @@
       <find>elu</find>
       <find>adam</find>
       <find>103</find>
+      <find>mnist</find>
+      <find>softma</find>
+      <find>print</find>
+      <find>current_layer</find>
+      <find>set_global</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -325,10 +322,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/ConvolutionNeuralNetwork.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="47">
-          <caret line="472" column="94" selection-start-line="472" selection-start-column="94" selection-end-line="472" selection-end-column="94" />
-          <caret line="473" column="40" selection-start-line="473" selection-start-column="40" selection-end-line="473" selection-end-column="40" />
-          <caret line="409" column="28" selection-start-line="409" selection-start-column="28" selection-end-line="409" selection-end-column="28" />
+        <state relative-caret-position="85">
+          <caret line="133" column="86" selection-start-line="133" selection-start-column="86" selection-end-line="133" selection-end-column="86" />
           <folding>
             <element signature="e#0#32#0" expanded="true" />
             <element signature="e#439#461#0" />

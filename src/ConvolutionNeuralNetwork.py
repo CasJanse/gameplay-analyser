@@ -131,7 +131,7 @@ def create_model_3(base_model):
     model_3 = build_model_3(base_model)
 
     # Compile model using accuracy to measure model performance
-    model_3.compile(optimizer=Adam(lr=current_learning_rate), loss="categorical_crossentropy", metrics=["accuracy"])
+    model_3.compile(optimizer=Adam(lr=current_learning_rate), loss="mean_squared_error", metrics=["accuracy"])
 
     # Save the model
     save_model(model_3)
@@ -150,13 +150,13 @@ def create_model_4(base_model):
     # endregion
 
 
-def train_model(model, x_train, x_test, y_train, y_test, video_data):
+def train_model(model, x_train, x_test, y_train, y_test, video_data=None):
     weights, biases = model.layers[0].get_weights()
     # print("weights")
     # print(weights)
     # print("biases")
     # print(biases)
-    result = model.predict(video_data)
+    result = model.predict(x_test)
     print(result)
     history = model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=current_epochs)
 
@@ -172,24 +172,29 @@ def train_model(model, x_train, x_test, y_train, y_test, video_data):
 
 # region Build CNN models
 def build_model_1(model):
-    model.add(Dense(current_layer_size, activation="softmax", input_shape=(current_chunk_size, 95, 103), bias_constraint=max_norm(3)))
+    model.add(Dense(current_layer_size, activation="softmax", input_shape=(28, 28, 1), bias_constraint=max_norm(3)))
     model.add(Flatten())
-    model.add(Dense(input_keys_amount * current_input_size_modifier, activation=current_activation_function, bias_constraint=max_norm(3)))
+    model.add(Dense(input_keys_amount * current_input_size_modifier * 2, activation=current_activation_function, bias_constraint=max_norm(3)))
     return model
 
 
 def build_model_2(model):
-    model.add(Conv2D(current_layer_size, kernel_size=current_kernel_size, activation="relu", input_shape=(current_chunk_size, 95, 103), data_format="channels_last"))
+    model.add(Conv2D(current_layer_size, kernel_size=current_kernel_size, activation="relu", input_shape=(95, 103, 1), data_format="channels_last"))
     model.add(Flatten())
     model.add(Dense(input_keys_amount * current_input_size_modifier, activation=current_activation_function))
     return model
 
 
 def build_model_3(model):
-    model.add(Conv2D(current_layer_size, kernel_size=current_kernel_size, activation="relu", input_shape=(current_chunk_size, 95, 103), data_format="channels_last"))
-    model.add(Conv2D(18, kernel_size=1, activation="relu"))
+    model.add(Conv2D(current_layer_size, kernel_size=current_kernel_size, activation="relu", input_shape=(95, 103, 1)))
+    model.add(Conv2D(int(current_layer_size / 2), kernel_size=3, activation="relu"))
     model.add(Flatten())
     model.add(Dense(input_keys_amount * current_input_size_modifier, activation=current_activation_function))
+
+    # model.add(Conv2D(64, kernel_size=3, activation="relu", input_shape=(28, 28, 1)))
+    # model.add(Conv2D(32, kernel_size=3, activation="relu"))
+    # model.add(Flatten())
+    # model.add(Dense(10, activation="softmax"))
     return model
 
 
@@ -249,6 +254,7 @@ def split(word):
 
 
 def get_activation_function(code):
+    code = int(code)
     if code == 0:
         return "elu"
     elif code == 1:
@@ -259,6 +265,7 @@ def get_activation_function(code):
         return "softmax"
     elif code == 4:
         return "tanh"
+    print("Error")
     return "elu"
 
 
@@ -297,6 +304,8 @@ def terminate_program(line_number=0, message="Program terminated (DEBUG)"):
 def train_networks(models_to_run, videos_to_use):
     for model_code in models_to_run:
         print(model_code)
+        set_global_variables(model_code)
+
         total_video_data = []
         total_input_data = []
 
@@ -312,8 +321,6 @@ def train_networks(models_to_run, videos_to_use):
         total_video_data = np.array(total_video_data)
         total_input_data = np.array(total_input_data)
 
-        print(total_video_data.shape)
-        print(total_input_data.shape)
         print("Model: {} - Layer Size: {} - Kernel Size: {} - Activation: {} - "
               "Epochs: {} - Learning Rate: {} - Data Format: {} - Input Format: {} - Chunk Size: {}".format(
                 current_model, current_layer_size, current_kernel_size, current_activation_function, current_epochs,
@@ -324,7 +331,13 @@ def train_networks(models_to_run, videos_to_use):
 
         x_train, x_test, y_train, y_test = convert_data_to_train_test_batches(total_video_data, total_input_data, 0.9)
 
-        # region Mnist test
+        x_train = x_train.reshape(len(x_train), 95, 103, 1)
+        x_test = x_test.reshape(len(x_test), 95, 103, 1)
+
+        print(x_train.shape)
+        print(x_test.shape)
+
+        # # region Mnist test
         # # Download mnist data and slit into train and test sets
         # (x_train, y_train), (x_test, y_test) = mnist.load_data()
         #
@@ -341,7 +354,7 @@ def train_networks(models_to_run, videos_to_use):
         # y_test = to_categorical(y_test)
         #
         # print(y_train[0])
-        # endregion
+        # # endregion
 
         model = load_model_from_file(model_file_name)
 
@@ -407,7 +420,7 @@ possible_epochs = [1, 3]
 possible_learning_rates = [0.001, 0.0001, 0.00001]
 possible_data_formats = ["1-3-1", "2-3-3", "2-3-5", "3-3-3", "3-3-5"]
 
-models_to_run = ["1-4096-0-2-3-0.0001_1-3-1-01"]
+models_to_run = ["3-64-3-2-1-0.001_1-3-1"]
 
 # for model in possible_models:
 #     for layer_size in possible_layer_sizes:
@@ -470,10 +483,11 @@ video_list = [7, 8, 9, 10, 11]
 
 train_networks(models_to_run, video_list)
 
-video_data, input_data = get_data_from_video("output_11.avi", "inputs_11.csv", 20, "1-4096-0-2-3-0.0001_1-3-1-01")
-model = load_model_from_file("1-4096-0-2-3-0.0001_1-3-1-01")
+video_data, input_data = get_data_from_video("output_11.avi", "inputs_11.csv", 20, "3-64-3-2-1-0.001_1-3-1")
+video_data_reshape = video_data.reshape(len(video_data), 95, 103, 1)
+model = load_model_from_file("3-64-3-2-1-0.001_1-3-1")
 
-result = model.predict(video_data)
+result = model.predict(video_data_reshape)
 
 print(result)
 print(model.summary())
