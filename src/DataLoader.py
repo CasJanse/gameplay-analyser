@@ -3,8 +3,8 @@ import csv
 
 
 class DataLoader:
-    def __init__(self, video_name, input_name, show_video=False, playback_speed=1, compression_percentage=100):
-        self.video = self.load_video(video_name)
+    def __init__(self, video_name, input_name, show_video=False, playback_speed=1, compression_percentage=100, greyscale=False):
+        self.video = self.load_video(video_name, greyscale)
         self.input_list = self.load_input(input_name)
 
         self.video_compressed = self.compress_video(self.video, compression_percentage)
@@ -18,7 +18,7 @@ class DataLoader:
     # Loads the video from the gameplay-data video file
     # @param name: The name of the video file
     # @return video_frame: A list containing all the frame data of the video
-    def load_video(self, name):
+    def load_video(self, name, greyscale=False):
         # Read the video file
         cap = cv2.VideoCapture("../../gameplay-data/video/{}".format(name))
         video_frames = []
@@ -26,6 +26,8 @@ class DataLoader:
         # Add every frame to the video_frames list
         while cap.isOpened():
             ret, frame = cap.read()
+            if greyscale and ret:
+                frame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
             video_frames.append(frame)
 
             if not ret:
