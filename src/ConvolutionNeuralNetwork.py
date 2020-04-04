@@ -91,10 +91,10 @@ def categorise_input_data(input_data, input_format=1):
                 temp_categorised_input_data[i][chunk_number][3] = 1
             else:
                 temp_categorised_input_data[i][chunk_number][3] = 0
-            if "z" in data:
-                temp_categorised_input_data[i][chunk_number][4] = 1
-            else:
-                temp_categorised_input_data[i][chunk_number][4] = 0
+            # if "z" in data:
+            #     temp_categorised_input_data[i][chunk_number][4] = 1
+            # else:
+            #     temp_categorised_input_data[i][chunk_number][4] = 0
         categorised_input_data[i] = temp_categorised_input_data[i].flatten().astype(int)
     return categorised_input_data
 # endregion
@@ -186,7 +186,7 @@ def build_model_2(model):
 
 
 def build_model_3(model):
-    model.add(Conv2D(current_layer_size, kernel_size=current_kernel_size, activation="relu", input_shape=(95, 103, 1)))
+    model.add(Conv2D(current_layer_size, kernel_size=current_kernel_size, activation="relu", input_shape=(83, 90, 1)))
     model.add(Conv2D(int(current_layer_size / 2), kernel_size=3, activation="relu"))
     model.add(Flatten())
     model.add(Dense(input_keys_amount * current_input_size_modifier, activation=current_activation_function))
@@ -265,7 +265,6 @@ def get_activation_function(code):
         return "softmax"
     elif code == 4:
         return "tanh"
-    print("Error")
     return "elu"
 
 
@@ -321,6 +320,8 @@ def train_networks(models_to_run, videos_to_use):
         total_video_data = np.array(total_video_data)
         total_input_data = np.array(total_input_data)
 
+        print(total_video_data.shape)
+        print(total_input_data.shape)
         print("Model: {} - Layer Size: {} - Kernel Size: {} - Activation: {} - "
               "Epochs: {} - Learning Rate: {} - Data Format: {} - Input Format: {} - Chunk Size: {}".format(
                 current_model, current_layer_size, current_kernel_size, current_activation_function, current_epochs,
@@ -331,8 +332,8 @@ def train_networks(models_to_run, videos_to_use):
 
         x_train, x_test, y_train, y_test = convert_data_to_train_test_batches(total_video_data, total_input_data, 0.9)
 
-        x_train = x_train.reshape(len(x_train), 95, 103, 1)
-        x_test = x_test.reshape(len(x_test), 95, 103, 1)
+        x_train = x_train.reshape(len(x_train), 83, 90, 1)
+        x_test = x_test.reshape(len(x_test), 83, 90, 1)
 
         print(x_train.shape)
         print(x_test.shape)
@@ -410,7 +411,7 @@ def load_model_from_file(model_code):
     return model
 
 
-input_keys_amount = 5
+input_keys_amount = 4
 
 possible_models = [2, 3]
 possible_layer_sizes = [32, 64, 128]
@@ -420,7 +421,7 @@ possible_epochs = [1, 3]
 possible_learning_rates = [0.001, 0.0001, 0.00001]
 possible_data_formats = ["1-3-1", "2-3-3", "2-3-5", "3-3-3", "3-3-5"]
 
-models_to_run = ["3-64-3-2-1-0.001_1-3-1"]
+models_to_run = ["3-64-3-2-1-0.0001_1-3-1-snake-01"]
 
 # for model in possible_models:
 #     for layer_size in possible_layer_sizes:
@@ -477,15 +478,15 @@ models_to_run = ["3-64-3-2-1-0.001_1-3-1"]
 #                  "1-64-0-4-1_1-3-1", "1-32-0-4-1_1-3-1", "1-128-0-4-1_1-3-1",
 # endregion
 
-video_list = [7, 8, 9, 10, 11]
+video_list = [30, 31]
 # video_list = [7, 8, 9, 10]
 # , 1311, 2315, 3315, 1321, 2325, 3325, 1331, 2335, 3335
 
 train_networks(models_to_run, video_list)
 
-video_data, input_data = get_data_from_video("output_11.avi", "inputs_11.csv", 20, "3-64-3-2-1-0.001_1-3-1")
-video_data_reshape = video_data.reshape(len(video_data), 95, 103, 1)
-model = load_model_from_file("3-64-3-2-1-0.001_1-3-1")
+video_data, input_data = get_data_from_video("output_30.avi", "inputs_30.csv", 20, "3-64-3-2-1-0.0001_1-3-1-snake-01")
+video_data_reshape = video_data.reshape(len(video_data), 83, 90, 1)
+model = load_model_from_file("3-64-3-2-1-0.0001_1-3-1-snake-01")
 
 result = model.predict(video_data_reshape)
 
