@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="61d19a0f-7358-4ba0-b369-52c3f6bcb476" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/SnakeDataImporter.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ConvolutionNeuralNetwork.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ConvolutionNeuralNetwork.py" afterDir="false" />
     </list>
@@ -16,10 +17,26 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/ConvolutionNeuralNetwork.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="404">
-              <caret line="193" column="86" selection-start-line="193" selection-start-column="86" selection-end-line="193" selection-end-column="86" />
+            <state relative-caret-position="285">
+              <caret line="333" column="18" selection-start-line="333" selection-start-column="18" selection-end-line="333" selection-end-column="18" />
               <folding>
                 <element signature="e#0#32#0" expanded="true" />
+                <element signature="e#4165#4191#0" />
+                <element signature="e#13234#13255#0" />
+                <element signature="e#16565#16596#0" />
+                <element signature="e#17268#17294#0" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/SnakeDataImporter.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-381">
+              <caret line="21" column="66" selection-start-line="21" selection-start-column="66" selection-end-line="21" selection-end-column="66" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -52,8 +69,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/DataLoader.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1020">
-              <caret line="61" column="27" selection-start-line="61" selection-start-column="27" selection-end-line="61" selection-end-column="27" />
+            <state relative-caret-position="272">
+              <caret line="17" column="38" selection-start-line="17" selection-start-column="31" selection-end-line="17" selection-end-column="38" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
               </folding>
@@ -72,29 +89,36 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>video</find>
-      <find>train_net</find>
-      <find>save</find>
-      <find>normalise</find>
-      <find>load_m</find>
-      <find>get_data</find>
-      <find>print(</find>
-      <find>190</find>
       <find>append</find>
       <find>json</find>
       <find>activation</find>
       <find>activa</find>
-      <find>relu</find>
       <find>dataload</find>
       <find>elu</find>
       <find>adam</find>
       <find>103</find>
       <find>mnist</find>
       <find>softma</find>
-      <find>print</find>
       <find>current_layer</find>
       <find>set_global</find>
       <find>categ</find>
+      <find>current_kerne</find>
+      <find>20</find>
+      <find>5</find>
+      <find>open</find>
+      <find>data</find>
+      <find>gamepla</find>
+      <find>if &quot;up</find>
+      <find>shape</find>
+      <find>reshape</find>
+      <find>show</find>
+      <find>train_net</find>
+      <find>print</find>
+      <find>get_data_from_video</find>
+      <find>extra</find>
+      <find>extract</find>
+      <find>show_video</find>
+      <find>relu</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -106,11 +130,12 @@
         <option value="$PROJECT_DIR$/src/DataLoader.py" />
         <option value="$PROJECT_DIR$/src/JSONLoader.py" />
         <option value="$PROJECT_DIR$/src/AccuracyGraph.py" />
+        <option value="$PROJECT_DIR$/src/SnakeDataImporter.py" />
         <option value="$PROJECT_DIR$/src/ConvolutionNeuralNetwork.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-8" />
     <option name="y" value="-8" />
     <option name="width" value="1936" />
@@ -242,9 +267,31 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="SnakeDataImporter" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="CNN" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/SnakeDataImporter.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Python.ConvolutionNeuralNetwork" />
+        <item itemvalue="Python.SnakeDataImporter" />
         <item itemvalue="Python.AccuracyGraph" />
         <item itemvalue="Python.JSONLoader" />
         <item itemvalue="Python.DataLoader" />
@@ -265,15 +312,15 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.098614074" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.10501066" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32936078" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32936078" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -289,7 +336,7 @@
       <window_info anchor="right" id="R Packages" order="4" />
     </layout>
     <layout-to-restore>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.09381663" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.10394456" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -318,16 +365,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/ConvolutionNeuralNetwork.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="404">
-          <caret line="193" column="86" selection-start-line="193" selection-start-column="86" selection-end-line="193" selection-end-column="86" />
-          <folding>
-            <element signature="e#0#32#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/JSONLoader.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="170">
@@ -350,10 +387,34 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/DataLoader.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1020">
-          <caret line="61" column="27" selection-start-line="61" selection-start-column="27" selection-end-line="61" selection-end-column="27" />
+        <state relative-caret-position="272">
+          <caret line="17" column="38" selection-start-line="17" selection-start-column="31" selection-end-line="17" selection-end-column="38" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/SnakeDataImporter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-381">
+          <caret line="21" column="66" selection-start-line="21" selection-start-column="66" selection-end-line="21" selection-end-column="66" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ConvolutionNeuralNetwork.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="333" column="18" selection-start-line="333" selection-start-column="18" selection-end-line="333" selection-end-column="18" />
+          <folding>
+            <element signature="e#0#32#0" expanded="true" />
+            <element signature="e#4165#4191#0" />
+            <element signature="e#13234#13255#0" />
+            <element signature="e#16565#16596#0" />
+            <element signature="e#17268#17294#0" />
           </folding>
         </state>
       </provider>

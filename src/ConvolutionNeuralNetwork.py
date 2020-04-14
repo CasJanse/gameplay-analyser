@@ -1,11 +1,12 @@
 from keras.datasets import mnist
 from keras.utils import to_categorical
 from keras.models import Sequential, load_model
-from keras.layers import Dense, Conv2D, Flatten, Conv3D
+from keras.layers import Dense, Conv2D, Flatten, Conv3D, MaxPool2D
 from keras.optimizers import Adam, SGD
 from keras.constraints import max_norm
 import keras.backend as k_backend
 from DataLoader import DataLoader
+from SnakeDataImporter import SnakeDataImporter
 import cv2
 import sys
 import numpy as np
@@ -64,39 +65,63 @@ def transform_data_to_equal_length(video_data, input_data):
     return video_data, input_data
 
 
-def categorise_input_data(input_data, input_format=1):
+def categorise_input_data(input_data, input_format=1, snake=False):
     categorised_input_data = np.empty([len(input_data), input_keys_amount * current_input_size_modifier])
     temp_categorised_input_data = np.empty([len(input_data), current_input_size_modifier, input_keys_amount])
 
-    for i, chunk in enumerate(input_data):
-        for j, data in enumerate(chunk):
-            if input_format == 3:
-                chunk_number = 0
-            else:
-                chunk_number = j
+    if snake:
+        categorised_input_data = input_data.reshape(len(input_data), len(input_data[0][0]))
+    else:
+        for i, chunk in enumerate(input_data):
+            for j, data in enumerate(chunk):
+                if input_format == 3:
+                    chunk_number = 0
+                else:
+                    chunk_number = j
 
-            if "up" in data:
-                temp_categorised_input_data[i][chunk_number][0] = 1
-            else:
-                temp_categorised_input_data[i][chunk_number][0] = 0
-            if "down" in data:
-                temp_categorised_input_data[i][chunk_number][1] = 1
-            else:
-                temp_categorised_input_data[i][chunk_number][1] = 0
-            if "left" in data:
-                temp_categorised_input_data[i][chunk_number][2] = 1
-            else:
-                temp_categorised_input_data[i][chunk_number][2] = 0
-            if "right" in data:
-                temp_categorised_input_data[i][chunk_number][3] = 1
-            else:
-                temp_categorised_input_data[i][chunk_number][3] = 0
-            # if "z" in data:
-            #     temp_categorised_input_data[i][chunk_number][4] = 1
-            # else:
-            #     temp_categorised_input_data[i][chunk_number][4] = 0
-        categorised_input_data[i] = temp_categorised_input_data[i].flatten().astype(int)
+                if "up" in data:
+                    temp_categorised_input_data[i][chunk_number][0] = 1
+                else:
+                    temp_categorised_input_data[i][chunk_number][0] = 0
+                if "down" in data:
+                    temp_categorised_input_data[i][chunk_number][1] = 1
+                else:
+                    temp_categorised_input_data[i][chunk_number][1] = 0
+                if "left" in data:
+                    temp_categorised_input_data[i][chunk_number][2] = 1
+                else:
+                    temp_categorised_input_data[i][chunk_number][2] = 0
+                if "right" in data:
+                    temp_categorised_input_data[i][chunk_number][3] = 1
+                else:
+                    temp_categorised_input_data[i][chunk_number][3] = 0
+                # if "z" in data:
+                #     temp_categorised_input_data[i][chunk_number][4] = 1
+                # else:
+                #     temp_categorised_input_data[i][chunk_number][4] = 0
+            categorised_input_data[i] = temp_categorised_input_data[i].flatten().astype(int)
     return categorised_input_data
+
+
+def extract_activity_frames(input_data, video_data):
+    print(len(video_data))
+    usable_frames = []
+    total_input_data = []
+    total_video_data = []
+
+    for i in range(len(input_data)):
+        if 1 in input_data[i]:
+            # usable_frames.append(i - 1)
+            usable_frames.append(i)
+            # usable_frames.append(i + 1)
+
+    for i in usable_frames:
+        total_input_data.append(input_data[i])
+        total_video_data.append(video_data[i])
+
+    print(len(total_video_data))
+    return total_video_data, total_input_data
+
 # endregion
 
 
@@ -156,8 +181,8 @@ def train_model(model, x_train, x_test, y_train, y_test, video_data=None):
     # print(weights)
     # print("biases")
     # print(biases)
-    result = model.predict(x_test)
-    print(result)
+    # result = model.predict(x_test)
+    # print(result)
     history = model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=current_epochs)
 
     weights, biases = model.layers[0].get_weights()
@@ -186,8 +211,10 @@ def build_model_2(model):
 
 
 def build_model_3(model):
-    model.add(Conv2D(current_layer_size, kernel_size=current_kernel_size, activation="relu", input_shape=(83, 90, 1)))
-    model.add(Conv2D(int(current_layer_size / 2), kernel_size=3, activation="relu"))
+    model.add(Conv2D(current_layer_size, kernel_size=current_kernel_size, activation="relu", input_shape=(video_width, video_height, 1), padding="same"))
+    model.add(MaxPool2D(pool_size=(2, 2), strides=2, padding="valid"))
+    model.add(Conv2D(int(current_layer_size / 2), kernel_size=current_kernel_size, activation="relu", padding="same"))
+    model.add(MaxPool2D(pool_size=(2, 2), strides=2, padding="valid"))
     model.add(Flatten())
     model.add(Dense(input_keys_amount * current_input_size_modifier, activation=current_activation_function))
 
@@ -283,11 +310,16 @@ def show_video(video_data, input_data, result=None, playback_speed=10):
     for i, chunk in enumerate(video_data):
         for j, frame in enumerate(chunk):
             # print("Recorded inputs: {}".format(input_data[i]))
-            print("Recorded inputs: {}".format(np.round(input_data[i], 2)))
+            print("Recorded inputs: {}".format(get_readable_output(np.round(input_data[i], 2))))
             if result is not None:
                 # print("Model prediction: {}".format(result[i]))
-                print("Model prediction: {}".format(np.round(result[i], 2)))
-            cv2.imshow("Test", frame)
+                # print("Model prediction: {}".format(np.round(result[i], 2)))
+                print("Model prediction: {}".format(get_readable_output(np.round(result[i], 2))))
+            print("-----")
+
+            cv2.namedWindow('image', cv2.WINDOW_NORMAL)
+            cv2.resizeWindow('image', 1000, 1000)
+            cv2.imshow("image", frame)
 
             if cv2.waitKey(playback_speed) & 0xFF == ord("q"):
                 pass
@@ -295,12 +327,25 @@ def show_video(video_data, input_data, result=None, playback_speed=10):
     terminate_program(getframeinfo(currentframe()).lineno, "Debug video ended")
 
 
+def get_readable_output(input_array):
+    index = np.argmax(input_array)
+    if index == 0 and input_array[0] > GUESS_THRESHOLD:
+        return "up"
+    if index == 1 and input_array[1] > GUESS_THRESHOLD:
+        return "down"
+    if index == 2 and input_array[2] > GUESS_THRESHOLD:
+        return "left"
+    if index == 3 and input_array[3] > GUESS_THRESHOLD:
+        return "right"
+    return "none"
+
+
 def terminate_program(line_number=0, message="Program terminated (DEBUG)"):
     sys.exit(message + "\nLine: {}".format(line_number))
 # endregion DEBUG
 
 
-def train_networks(models_to_run, videos_to_use):
+def train_networks(models_to_run, videos_to_use, snake=False):
     for model_code in models_to_run:
         print(model_code)
         set_global_variables(model_code)
@@ -309,13 +354,15 @@ def train_networks(models_to_run, videos_to_use):
         total_input_data = []
 
         for index in videos_to_use:
-            video_data, input_data = get_data_from_video("output_{}.avi".format(index), "inputs_{}.csv".format(index), 20, model_code)
+            video_data, input_data = get_data_from_video("output_{}.avi".format(index), "inputs_{}.csv".format(index), COMPRESSION_PERCENTAGE, model_code, snake)
 
             for i, video in enumerate(video_data):
                 total_video_data.append(video_data[i])
 
             for i, input in enumerate(input_data):
                 total_input_data.append(input_data[i])
+
+        total_video_data, total_input_data = extract_activity_frames(total_input_data, total_video_data)
 
         total_video_data = np.array(total_video_data)
         total_input_data = np.array(total_input_data)
@@ -332,8 +379,8 @@ def train_networks(models_to_run, videos_to_use):
 
         x_train, x_test, y_train, y_test = convert_data_to_train_test_batches(total_video_data, total_input_data, 0.9)
 
-        x_train = x_train.reshape(len(x_train), 83, 90, 1)
-        x_test = x_test.reshape(len(x_test), 83, 90, 1)
+        x_train = x_train.reshape(len(x_train), video_width, video_height, 1)
+        x_test = x_test.reshape(len(x_test), video_width, video_height, 1)
 
         print(x_train.shape)
         print(x_test.shape)
@@ -376,19 +423,31 @@ def train_networks(models_to_run, videos_to_use):
         train_model(load_model_from_file(model_file_name), x_train, x_test, y_train, y_test, total_video_data)
 
 
-def get_data_from_video(video_name, input_name, compression_percentage, model_code):
-    data_loader = DataLoader(video_name, input_name, False, 0, compression_percentage, greyscale=True)
+def get_data_from_video(video_name, input_name, compression_percentage, model_code, snake=False):
+    if snake:
+        data_loader = SnakeDataImporter()
+    else:
+        data_loader = DataLoader(video_name, input_name, False, 0, compression_percentage, greyscale=True)
     video_data, input_data = data_loader.get_data()
+    print("BEGIN SHAPE: {}".format(np.array(video_data).shape))
 
     set_global_variables(model_code)
 
-    video_data = normalise_video_data(video_data)
+    # video_data = normalise_video_data(video_data)
     video_data = np.asarray(clean_data(video_data, current_data_format, current_chunk_size))
     input_data = np.asarray(clean_data(input_data, current_data_format, current_chunk_size))
 
     video_data, input_data = transform_data_to_equal_length(video_data, input_data)
 
-    input_data = categorise_input_data(input_data, current_input_format)
+    input_data = categorise_input_data(input_data, current_input_format, snake)
+
+    global video_height
+    global video_width
+    video_width = np.array(video_data).shape[2]
+    video_height = np.array(video_data).shape[3]
+
+    print("Video_data_shape: {}".format(video_data.shape))
+    print(np.unique(np.array(video_data)))
     return video_data, input_data
 
 
@@ -421,7 +480,7 @@ possible_epochs = [1, 3]
 possible_learning_rates = [0.001, 0.0001, 0.00001]
 possible_data_formats = ["1-3-1", "2-3-3", "2-3-5", "3-3-3", "3-3-5"]
 
-models_to_run = ["3-64-3-2-1-0.0001_1-3-1-snake-01"]
+models_to_run = ["3-128-5-2-8-0.001_1-3-1-snake-02"]
 
 # for model in possible_models:
 #     for layer_size in possible_layer_sizes:
@@ -478,21 +537,24 @@ models_to_run = ["3-64-3-2-1-0.0001_1-3-1-snake-01"]
 #                  "1-64-0-4-1_1-3-1", "1-32-0-4-1_1-3-1", "1-128-0-4-1_1-3-1",
 # endregion
 
-video_list = [30, 31]
+COMPRESSION_PERCENTAGE = 4
+GUESS_THRESHOLD = 0.90
+video_list = [30]
 # video_list = [7, 8, 9, 10]
 # , 1311, 2315, 3315, 1321, 2325, 3325, 1331, 2335, 3335
 
-train_networks(models_to_run, video_list)
+# train_networks(models_to_run, video_list, True)
 
-video_data, input_data = get_data_from_video("output_30.avi", "inputs_30.csv", 20, "3-64-3-2-1-0.0001_1-3-1-snake-01")
-video_data_reshape = video_data.reshape(len(video_data), 83, 90, 1)
-model = load_model_from_file("3-64-3-2-1-0.0001_1-3-1-snake-01")
+set_global_variables(models_to_run[0])
+video_data, input_data = get_data_from_video("output_30.avi", "inputs_30.csv", COMPRESSION_PERCENTAGE, "3-128-5-2-8-0.001_1-3-1-snake-02", True)
+video_data_reshape = video_data.reshape(len(video_data), video_width, video_height, 1)
+model = load_model_from_file("3-128-5-2-8-0.001_1-3-1-snake-02")
 
 result = model.predict(video_data_reshape)
 
 print(result)
 print(model.summary())
 
-show_video(video_data, input_data, result, 200)
+show_video(video_data, input_data, result, 500)
 
 terminate_program(getframeinfo(currentframe()).lineno)
